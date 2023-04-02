@@ -5,65 +5,134 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock Paper Scissors</title>
-    <script>
-        let playerScore = 0;
-        let computerScore = 0;
-
-        function getComputerChoice(){
-            const choices = ["Rock", "Paper", "Scissors"];
-            let randomIndex = Math.floor(Math.random() * 3);
-            return choices[randomIndex];
-        }
-
-        function playRound(playerChoice, computerChoice){
-            let result = 10;     // 0 -> computerWin, 1 -> playerWin, 2 -> tie
-
-            if (playerChoice === "rock"){
-                if (computerChoice === "paper") result = 0;
-                else if (computerChoice === "scissors") result = 1;
-                else result = 2;
-            }
-
-            else if (playerChoice === "paper"){
-                if (computerChoice === "scissors") result = 0;
-                else if (computerChoice === "rock") result = 1;
-                else result = 2;
-            }
-
-            else if (playerChoice === "scissors") {
-                if (computerChoice === "rock") result = 0;
-                else if (computerChoice === "paper") result = 1;
-                else result = 2;
-            }
-
-            // Result
-            if (result === 0){
-                computerScore++;
-                return "You LOSE! " + computerChoice + " beats " + playerChoice;
-            }
-            else if (result === 1){
-                playerScore++;
-                return "You WIN!! " + playerChoice + " beats " + computerChoice;
-            }
-            else if (result === 2) return "TIE! " + playerChoice + " selected by both";
-            else return "INVALID Choice!";
-        }
-
-        function game(){
-            let score = 0;
-            for (let i = 0; i < 5; i++){
-                let playerChoice = prompt("Player choice: ").toLowerCase();
-                let computerChoice = getComputerChoice().toLowerCase();
-                console.log(playRound(playerChoice, computerChoice));
-            }
-
-            if (playerScore > computerScore) console.log("YOU WIN!!!!");
-            else if (playerScore < computerScore) console.log("YOU LOSE :(");
-            else console.log("TIE!!! What a match!");
-        }
-    </script>
 </head>
 <body>
-    
+    <button id="rock">ROCK</button>
+    <button id="paper">PAPER</button>
+    <button id="scissors">SCISSORS</button>
+
+    <div class="result">
+        <p class="matchPara">Make your choice!</p>
+
+        <div class="scores">
+            <p class="playerScore">Player Score: 0</p>
+            <p class="compScore">Computer Score: 0</p>
+        </div>
+    </div>
 </body>
+
+<script>
+    let playerScore = 0;
+    let computerScore = 0;
+
+    function showScores() {
+        const playerScorePara = document.querySelector(".playerScore");
+        const compScorePara = document.querySelector(".compScore");
+
+        playerScorePara.textContent = "Player Score: " + playerScore;
+        compScorePara.textContent = "Computer Score: " + computerScore;
+    }
+
+    function showMatchResult(matchResult) {
+        const resultContainer = document.querySelector(".result");
+
+        const matchResultPara = document.querySelector(".matchPara");
+        matchResultPara.textContent = matchResult;
+
+        showScores();
+    }
+
+    function showFinalResult() {
+        let finalResult;
+        if (playerScore > computerScore) {
+            finalResult = "YOU WIN!!!!";
+        }
+        else {
+            finalResult = "YOU LOSE :("
+        }
+
+        const finalContainer = document.createElement("div");
+
+        const finalHead = document.createElement("h2");
+        finalHead.textContent = finalResult;
+
+        finalContainer.appendChild(finalHead);
+
+        document.body.appendChild(finalContainer);
+    }
+
+    function getComputerChoice() {
+        const choices = ["rock", "paper", "scissors"];
+        let randomIndex = Math.floor(Math.random() * 3);
+        return choices[randomIndex];
+    }
+
+    function playRound(event) {
+        let playerChoice = event.target.id;
+        let computerChoice = getComputerChoice();
+
+        let matchResult = "";
+
+        let result = 10;     // 0 -> computerWin, 1 -> playerWin, 2 -> tie
+
+        if (playerChoice === "rock"){
+            if (computerChoice === "paper") result = 0;
+            else if (computerChoice === "scissors") result = 1;
+            else result = 2;
+        }
+
+        else if (playerChoice === "paper"){
+            if (computerChoice === "scissors") result = 0;
+            else if (computerChoice === "rock") result = 1;
+            else result = 2;
+        }
+
+        else if (playerChoice === "scissors") {
+            if (computerChoice === "rock") result = 0;
+            else if (computerChoice === "paper") result = 1;
+            else result = 2;
+        }
+
+        // Result
+        if (result === 0){
+            computerScore++;
+            matchResult = "You LOSE! " + computerChoice + " beats " + playerChoice;
+        }
+        else if (result === 1){
+            playerScore++;
+            matchResult = "You WIN!! " + playerChoice + " beats " + computerChoice;
+        }
+        else if (result === 2) matchResult = "TIE! " + computerChoice + " selected by both";
+
+        showMatchResult(matchResult);
+
+        if (playerScore >= 5 || computerScore >= 5) {
+            showFinalResult();
+
+            // Now you can't play
+            buttons.forEach(button => {
+                button.removeEventListener("click", playRound);
+            });
+        }
+    }
+
+    buttons = document.querySelectorAll("button");
+    
+    buttons.forEach(button => {
+        button.addEventListener("click", playRound);
+    });
+
+    // function game() {
+    //     let score = 0;
+    //     for (let i = 0; i < 5; i++){
+    //         let playerChoice = prompt("Player choice: ").toLowerCase();
+    //         let computerChoice = getComputerChoice().toLowerCase();
+    //         console.log(playRound(playerChoice, computerChoice));
+    //     }
+
+    //     if (playerScore > computerScore) console.log("YOU WIN!!!!");
+    //     else if (playerScore < computerScore) console.log("YOU LOSE :(");
+    //     else console.log("TIE!!! What a match!");
+    // }
+</script>
 </html>
